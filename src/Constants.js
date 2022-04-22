@@ -200,6 +200,7 @@ exports.GiveawayEditOptions = {};
  * @property {GiveawayMessages} messages The giveaway messages.
  * @property {string} prize The giveaway prize.
  * @property {string} [thumbnail] The URL appearing as the thumbnail on the giveaway embed.
+ * @property {string} [banner] The URL appearing as the thumbnail on the giveaway embed.
  * @property {Discord.Snowflake} channelId The Id of the channel.
  * @property {Discord.Snowflake} guildId The Id of the guild.
  * @property {Discord.Snowflake[]} [winnerIds] The winner Ids of the giveaway after it ended.

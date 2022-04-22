@@ -251,6 +251,14 @@ class Giveaway extends EventEmitter {
     }
 
     /**
+     * @type {string} banner
+     */
+
+    get banner() {
+        return this.options.banner ?? null;
+    }
+
+    /**
      * Function to filter members. If true is returned, the member won't be able to win the giveaway.
      * @property {Discord.GuildMember} member The member to check
      * @returns {Promise<boolean>} Whether the member should get exempted

@@ -94,6 +94,7 @@ export interface GiveawayStartOptions<ExtraData> {
     reaction?: EmojiIdentifierResolvable;
     messages?: GiveawaysMessages;
     thumbnail?: string;
+    banner?: string;
     extraData?: ExtraData;
     lastChance?: LastChanceOptions;
     pauseOptions?: PauseOptions;
@@ -141,6 +142,7 @@ export class Giveaway<ExtraData = any> extends EventEmitter {
     public messageId: Snowflake;
     public messages: Required<GiveawaysMessages>;
     public thumbnail?: string;
+    public banner?: string;
     public extraData?: ExtraData;
     public options: GiveawayData<ExtraData>;
     public prize: string;
@@ -220,6 +222,7 @@ export interface GiveawayData<ExtraData = any> {
     embedColor?: ColorResolvable;
     embedColorEnd?: ColorResolvable;
     thumbnail?: string;
+    banner?: string;
     hostedBy?: string;
     extraData?: ExtraData;
     lastChance?: LastChanceOptions;

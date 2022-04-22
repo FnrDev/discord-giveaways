@@ -103,7 +103,8 @@ class GiveawaysManager extends EventEmitter {
                           ) +
                           (giveaway.hostedBy ? '\n' + giveaway.messages.hostedBy : '')
             )
-            .setThumbnail(giveaway.thumbnail);
+            .setThumbnail(giveaway.thumbnail)
+            .setImage(giveaway.banner);
         if (giveaway.endAt !== Infinity) embed.setTimestamp(giveaway.endAt);
         else delete embed.timestamp; // TODO: Remove, when the "null to 0" problem is (probably) redundant with @discordjs/builders in discord.js v14
         return giveaway.fillInEmbed(embed);
@@ -240,6 +241,7 @@ class GiveawaysManager extends EventEmitter {
                         ? merge(GiveawayMessages, options.messages)
                         : GiveawayMessages,
                 thumbnail: typeof options.thumbnail === 'string' ? options.thumbnail : undefined,
+                banner: typeof options.banner === 'string' ? options.banner : undefined,
                 reaction: Discord.Util.resolvePartialEmoji(options.reaction) ? options.reaction : undefined,
                 botsCanWin: typeof options.botsCanWin === 'boolean' ? options.botsCanWin : undefined,
                 exemptPermissions: Array.isArray(options.exemptPermissions) ? options.exemptPermissions : undefined,

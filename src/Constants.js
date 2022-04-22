@@ -66,6 +66,7 @@ exports.GiveawayMessages = {
  * @property {Discord.EmojiIdentifierResolvable} [reaction] The reaction to participate in the giveaway.
  * @property {GiveawayMessages} [messages] The giveaway messages.
  * @property {string} [thumbnail] The URL appearing as the thumbnail on the giveaway embed.
+ * @property {string} [banner] The URL appearing as the banner on the giveaway embed.
  * @property {any} [extraData] The extra data for this giveaway.
  * @property {LastChanceOptions} [lastChance] The options for the last chance system.
  * @property {PauseOptions} [pauseOptions] The options for the pause system.

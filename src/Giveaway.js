@@ -734,9 +734,17 @@ class Giveaway extends EventEmitter {
                         }
                     }
                 } else if (message?.length <= 2000) {
+                    const row2 = new Discord.MessageActionRow()
+                        .addComponents(
+                            new Discord.MessageButton()
+                                .setStyle('LINK')
+                                .setLabel('View Giveaway')
+                                .setURL(this.messageURL)
+                        );
                     channel.send({
                         content: message,
                         allowedMentions: this.allowedMentions,
+                        components: [row2],
                         reply: {
                             messageReference:
                                 typeof this.messages.winMessage.replyToGiveaway === 'boolean'

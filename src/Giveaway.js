@@ -647,7 +647,14 @@ class Giveaway extends EventEmitter {
                             formattedWinners.slice(0, formattedWinners.lastIndexOf(',', 1999) + 2).length
                         );
                     }
-                    channel.send({ content: formattedWinners, allowedMentions: this.allowedMentions });
+                    const row = new Discord.MessageActionRow()
+                        .addComponents(
+                            new Discord.MessageButton()
+                                .setStyle('LINK')
+                                .setLabel('View Giveaway')
+                                .setURL(this.messageURL)
+                        );
+                    channel.send({ content: formattedWinners, allowedMentions: this.allowedMentions, components: [row] });
 
                     const lastContentPart = winMessage.slice(winMessage.indexOf('{winners}') + 9);
                     if (lastContentPart.length) {

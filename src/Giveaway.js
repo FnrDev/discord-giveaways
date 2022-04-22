@@ -726,6 +726,7 @@ class Giveaway extends EventEmitter {
                                 .setStyle('LINK')
                                 .setLabel('View Giveaway')
                                 .setURL(this.messageURL)
+                                .setEmoji('🥳')
                         );
                     channel.send({
                         content: message,

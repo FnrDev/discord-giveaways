@@ -297,6 +297,7 @@ class Giveaway extends EventEmitter {
             prize: this.prize,
             messages: this.messages,
             thumbnail: this.thumbnail,
+            banner: this.banner,
             hostedBy: this.options.hostedBy,
             embedColor: this.options.embedColor,
             embedColorEnd: this.options.embedColorEnd,

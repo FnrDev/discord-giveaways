@@ -66,6 +66,7 @@ class GiveawaysManager extends EventEmitter {
      */
     generateMainEmbed(giveaway, lastChanceEnabled = false) {
         const embed = new Discord.MessageEmbed()
+            .setAuthor({ name: giveaway.role ? '⚠ YOU NEED SPECIFIC ROLE TO JOIN' : null })
             .setTitle(giveaway.prize)
             .setColor(
                 giveaway.isDrop

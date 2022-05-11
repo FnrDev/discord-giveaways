@@ -15,7 +15,8 @@ import {
     Snowflake,
     TextChannel,
     ThreadChannel,
-    User
+    User,
+    Role
 } from 'discord.js';
 
 export const version: string;
@@ -100,6 +101,7 @@ export interface GiveawayStartOptions<ExtraData> {
     pauseOptions?: PauseOptions;
     isDrop?: boolean;
     allowedMentions?: Omit<MessageMentionOptions, 'repliedUser'>;
+    role?: Role;
 }
 export interface GiveawaysMessages {
     giveaway?: string;
@@ -229,4 +231,5 @@ export interface GiveawayData<ExtraData = any> {
     pauseOptions?: PauseOptions;
     isDrop?: boolean;
     allowedMentions?: Omit<MessageMentionOptions, 'repliedUser'>;
+    role?: Role;
 }

@@ -72,6 +72,7 @@ exports.GiveawayMessages = {
  * @property {PauseOptions} [pauseOptions] The options for the pause system.
  * @property {Boolean} [isDrop] If the giveaway is a drop, or not. Drop means that if the amount of reactions to the giveaway is the same as "winnerCount" then it immediately ends.
  * @property {Discord.MessageMentionOptions} [allowedMentions] Which mentions should be parsed from the giveaway messages content.
+ * @property {Discord.Role} [role] The role if the member only has it can join giveaway.
  */
 exports.GiveawayStartOptions = {};
 
@@ -218,5 +219,6 @@ exports.GiveawayEditOptions = {};
  * @property {PauseOptions} [pauseOptions] The options for the pause system.
  * @property {Boolean} [isDrop] If the giveaway is a drop, or not. Drop means that if the amount of reactions to the giveaway is the same as "winnerCount" then it immediately ends.
  * @property {Discord.MessageMentionOptions} [allowedMentions] Which mentions should be parsed from the giveaway messages content.
+ * @property {Discord.Role} [role] The role if the member only has it can join giveaway.
  */
 exports.GiveawayData = {};

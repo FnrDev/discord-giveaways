@@ -259,6 +259,14 @@ class Giveaway extends EventEmitter {
     }
 
     /**
+     * @type {?Discord.Role}
+     */
+
+    get role() {
+        return this.options.role ?? null;
+    }
+
+    /**
      * Function to filter members. If true is returned, the member won't be able to win the giveaway.
      * @property {Discord.GuildMember} member The member to check
      * @returns {Promise<boolean>} Whether the member should get exempted
@@ -317,7 +325,8 @@ class Giveaway extends EventEmitter {
             lastChance: this.options.lastChance,
             pauseOptions: this.options.pauseOptions,
             isDrop: this.options.isDrop || undefined,
-            allowedMentions: this.allowedMentions
+            allowedMentions: this.allowedMentions,
+            role: this.role
         };
     }
 

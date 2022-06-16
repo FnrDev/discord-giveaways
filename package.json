@@ -62,9 +62,6 @@
     "jsdoc-skyceil": "Androz2091/jsdoc-skyceil",
     "typescript": "^4.5.4"
   },
-  "peerDependencies": {
-    "discord.js": ">=13.5.0"
-  },
   "engines": {
     "node": ">=16.6.0"
   }

@@ -910,7 +910,7 @@ class Giveaway extends EventEmitter {
                             embeds: embed2 ? [embed2] : null,
                             allowedMentions: this.allowedMentions,
                             reply: {
-                                messageReference: true,
+                                messageReference: this.messageId,
                                 failIfNotExists: false
                             }
                         })

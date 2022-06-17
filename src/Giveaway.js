@@ -741,6 +741,14 @@ class Giveaway extends EventEmitter {
                 const components = this.fillInComponents(this.messages.winMessage.components);
 
                 if (message?.length > 2000) {
+                    const row = new Discord.MessageActionRow()
+                        .addComponents(
+                            new Discord.MessageButton()
+                                .setStyle('LINK')
+                                .setLabel('Go To Giveaway')
+                                .setURL(this.messageURL)
+                                .setEmoji('🥳')
+                        );
                     const firstContentPart = winMessage.slice(0, winMessage.indexOf('{winners}'));
                     if (firstContentPart.length) {
                         await channel
@@ -748,12 +756,10 @@ class Giveaway extends EventEmitter {
                                 content: firstContentPart,
                                 allowedMentions: this.allowedMentions,
                                 reply: {
-                                    messageReference:
-                                        typeof this.messages.winMessage.replyToGiveaway === 'boolean'
-                                            ? this.messageId
-                                            : undefined,
+                                    messageReference: this.messageId,
                                     failIfNotExists: false
-                                }
+                                },
+                                components: [row]
                             })
                             .catch(() => {});
                     }
@@ -761,7 +767,8 @@ class Giveaway extends EventEmitter {
                         await channel
                             .send({
                                 content: formattedWinners.slice(0, formattedWinners.lastIndexOf(',', 1999)) + ',',
-                                allowedMentions: this.allowedMentions
+                                allowedMentions: this.allowedMentions,
+                                components: [row]
                             })
                             .catch(() => {});
                         formattedWinners = formattedWinners.slice(
@@ -769,19 +776,11 @@ class Giveaway extends EventEmitter {
                         );
                     }
                     await channel
-                        .send({ content: formattedWinners, allowedMentions: this.allowedMentions })
+                        .send({ content: formattedWinners, allowedMentions: this.allowedMentions, components: [row] })
                         .catch(() => {});
 
                     const lastContentPart = winMessage.slice(winMessage.indexOf('{winners}') + 9);
                     if (lastContentPart.length) {
-                        const row = new Discord.MessageActionRow()
-                            .addComponents(
-                                new Discord.MessageButton()
-                                    .setStyle('LINK')
-                                    .setLabel('Go To Giveaway')
-                                    .setURL(this.messageURL)
-                                    .setEmoji('🥳')
-                            );
                         await channel
                             .send({
                                 content: lastContentPart,

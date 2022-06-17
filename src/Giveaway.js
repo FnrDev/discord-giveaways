@@ -774,14 +774,18 @@ class Giveaway extends EventEmitter {
 
                     const lastContentPart = winMessage.slice(winMessage.indexOf('{winners}') + 9);
                     if (lastContentPart.length) {
+                        const row = new Discord.MessageActionRow()
+                            .addComponents(
+                                new Discord.MessageButton()
+                                    .setStyle('LINK')
+                                    .setLabel('Go To Giveaway')
+                                    .setURL(this.messageURL)
+                                    .setEmoji('🥳')
+                            );
                         await channel
                             .send({
                                 content: lastContentPart,
-                                components:
-                                    this.messages.winMessage.embed && typeof this.messages.winMessage.embed === 'object'
-                                        ? null
-                                        : components,
-                                allowedMentions: this.allowedMentions
+                                components: [row]
                             })
                             .catch(() => {});
                     }

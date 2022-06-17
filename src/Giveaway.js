@@ -3,6 +3,7 @@ const { setTimeout, clearTimeout } = require('node:timers');
 const { deepmerge, deepmergeCustom } = require('deepmerge-ts');
 const customDeepmerge = deepmergeCustom({ mergeArrays: false });
 const serialize = require('serialize-javascript');
+// eslint-disable-next-line node/no-unpublished-require
 const Discord = require('discord.js');
 const {
     GiveawayEditOptions,
@@ -264,7 +265,6 @@ class Giveaway extends EventEmitter {
     }
 
     /**
-<<<<<<< HEAD
      * @type {string} banner
      */
 
@@ -278,10 +278,13 @@ class Giveaway extends EventEmitter {
 
     get role() {
         return this.options.role ?? null;
-=======
+    }
+
+    /**
      * The reaction on the giveaway message.
      * @type {?Discord.MessageReaction}
      */
+
     get messageReaction() {
         const emoji = Discord.Util.resolvePartialEmoji(this.reaction);
         return (
@@ -289,7 +292,6 @@ class Giveaway extends EventEmitter {
                 [r.emoji.name, r.emoji.id].filter(Boolean).includes(emoji?.name ?? emoji?.id)
             ) ?? null
         );
->>>>>>> 4449fbaf40568cd7b16f377513270139ee7280bd
     }
 
     /**
@@ -331,11 +333,7 @@ class Giveaway extends EventEmitter {
             prize: this.prize,
             messages: this.messages,
             thumbnail: this.thumbnail,
-<<<<<<< HEAD
             banner: this.banner,
-=======
-            image: this.image,
->>>>>>> 4449fbaf40568cd7b16f377513270139ee7280bd
             hostedBy: this.options.hostedBy,
             embedColor: this.options.embedColor,
             embedColorEnd: this.options.embedColorEnd,
@@ -866,28 +864,6 @@ class Giveaway extends EventEmitter {
                         }
                     }
                 } else if (message?.length <= 2000) {
-<<<<<<< HEAD
-                    const row2 = new Discord.MessageActionRow()
-                        .addComponents(
-                            new Discord.MessageButton()
-                                .setStyle('LINK')
-                                .setLabel('View Giveaway')
-                                .setURL(this.messageURL)
-                                .setEmoji('🥳')
-                        );
-                    channel.send({
-                        content: message,
-                        allowedMentions: this.allowedMentions,
-                        components: [row2],
-                        reply: {
-                            messageReference:
-                                typeof this.messages.winMessage.replyToGiveaway === 'boolean'
-                                    ? this.messageId
-                                    : undefined,
-                            failIfNotExists: false
-                        }
-                    });
-=======
                     await channel
                         .send({
                             content: message,
@@ -902,7 +878,6 @@ class Giveaway extends EventEmitter {
                             }
                         })
                         .catch(() => {});
->>>>>>> 4449fbaf40568cd7b16f377513270139ee7280bd
                 }
             } else {
                 const embed1 = this.manager.generateNoValidParticipantsEndEmbed(this);

@@ -864,7 +864,7 @@ class Giveaway extends EventEmitter {
                             components: [row],
                             allowedMentions: this.allowedMentions,
                             reply: {
-                                messageReference: true,
+                                messageReference: this.messageId,
                                 failIfNotExists: false
                             }
                         })
@@ -983,10 +983,7 @@ class Giveaway extends EventEmitter {
                                 content: firstContentPart,
                                 allowedMentions: this.allowedMentions,
                                 reply: {
-                                    messageReference:
-                                        typeof options.messages.congrat.replyToGiveaway === 'boolean'
-                                            ? this.messageId
-                                            : undefined,
+                                    messageReference: this.messageId,
                                     failIfNotExists: false
                                 }
                             })
@@ -1036,11 +1033,7 @@ class Giveaway extends EventEmitter {
                                 components,
                                 allowedMentions: this.allowedMentions,
                                 reply: {
-                                    messageReference:
-                                        !(message?.length > 2000) &&
-                                        typeof options.messages.congrat.replyToGiveaway === 'boolean'
-                                            ? this.messageId
-                                            : undefined,
+                                    messageReference: this.messageId,
                                     failIfNotExists: false
                                 }
                             })
@@ -1056,11 +1049,7 @@ class Giveaway extends EventEmitter {
                                     embeds: [firstEmbed],
                                     allowedMentions: this.allowedMentions,
                                     reply: {
-                                        messageReference:
-                                            !(message?.length > 2000) &&
-                                            typeof options.messages.congrat.replyToGiveaway === 'boolean'
-                                                ? this.messageId
-                                                : undefined,
+                                        messageReference: this.messageId,
                                         failIfNotExists: false
                                     }
                                 })
@@ -1106,10 +1095,7 @@ class Giveaway extends EventEmitter {
                             components,
                             allowedMentions: this.allowedMentions,
                             reply: {
-                                messageReference:
-                                    typeof options.messages.congrat.replyToGiveaway === 'boolean'
-                                        ? this.messageId
-                                        : undefined,
+                                messageReference: this.messageId,
                                 failIfNotExists: false
                             }
                         })
@@ -1126,10 +1112,7 @@ class Giveaway extends EventEmitter {
                             components: this.fillInComponents(options.messages.error.components),
                             allowedMentions: this.allowedMentions,
                             reply: {
-                                messageReference:
-                                    typeof options.messages.error.replyToGiveaway === 'boolean'
-                                        ? this.messageId
-                                        : undefined,
+                                messageReference: this.messageId,
                                 failIfNotExists: false
                             }
                         })

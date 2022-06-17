@@ -738,17 +738,16 @@ class Giveaway extends EventEmitter {
                 let formattedWinners = winners.map((w) => `<@${w.id}>`).join(', ');
                 const winMessage = this.fillInString(this.messages.winMessage.content || this.messages.winMessage);
                 const message = winMessage?.replace('{winners}', formattedWinners);
-                const components = this.fillInComponents(this.messages.winMessage.components);
+                const row = new Discord.MessageActionRow()
+                    .addComponents(
+                        new Discord.MessageButton()
+                            .setStyle('LINK')
+                            .setLabel('Go To Giveaway')
+                            .setURL(this.messageURL)
+                            .setEmoji('🥳')
+                    );
 
                 if (message?.length > 2000) {
-                    const row = new Discord.MessageActionRow()
-                        .addComponents(
-                            new Discord.MessageButton()
-                                .setStyle('LINK')
-                                .setLabel('Go To Giveaway')
-                                .setURL(this.messageURL)
-                                .setEmoji('🥳')
-                        );
                     const firstContentPart = winMessage.slice(0, winMessage.indexOf('{winners}'));
                     if (firstContentPart.length) {
                         await channel
@@ -800,14 +799,10 @@ class Giveaway extends EventEmitter {
                             .send({
                                 content: message?.length <= 2000 ? message : null,
                                 embeds: [embed.setDescription(embedDescription)],
-                                components,
+                                components: [row],
                                 allowedMentions: this.allowedMentions,
                                 reply: {
-                                    messageReference:
-                                        !(message?.length > 2000) &&
-                                        typeof this.messages.winMessage.replyToGiveaway === 'boolean'
-                                            ? this.messageId
-                                            : undefined,
+                                    messageReference: this.messageId,
                                     failIfNotExists: false
                                 }
                             })
@@ -823,11 +818,7 @@ class Giveaway extends EventEmitter {
                                     embeds: [firstEmbed],
                                     allowedMentions: this.allowedMentions,
                                     reply: {
-                                        messageReference:
-                                            !(message?.length > 2000) &&
-                                            typeof this.messages.winMessage.replyToGiveaway === 'boolean'
-                                                ? this.messageId
-                                                : undefined,
+                                        messageReference: this.messageId,
                                         failIfNotExists: false
                                     }
                                 })
@@ -862,7 +853,7 @@ class Giveaway extends EventEmitter {
                         );
                         if (lastEmbed.length) {
                             await channel
-                                .send({ embeds: [lastEmbed], components, allowedMentions: this.allowedMentions })
+                                .send({ embeds: [lastEmbed], components: [row], allowedMentions: this.allowedMentions })
                                 .catch(() => {});
                         }
                     }
@@ -870,13 +861,10 @@ class Giveaway extends EventEmitter {
                     await channel
                         .send({
                             content: message,
-                            components,
+                            components: [row],
                             allowedMentions: this.allowedMentions,
                             reply: {
-                                messageReference:
-                                    typeof this.messages.winMessage.replyToGiveaway === 'boolean'
-                                        ? this.messageId
-                                        : undefined,
+                                messageReference: true,
                                 failIfNotExists: false
                             }
                         })
@@ -920,11 +908,9 @@ class Giveaway extends EventEmitter {
                         .send({
                             content: message,
                             embeds: embed2 ? [embed2] : null,
-                            components: this.fillInComponents(noWinnerMessage?.components),
                             allowedMentions: this.allowedMentions,
                             reply: {
-                                messageReference:
-                                    typeof noWinnerMessage?.replyToGiveaway === 'boolean' ? this.messageId : undefined,
+                                messageReference: true,
                                 failIfNotExists: false
                             }
                         })

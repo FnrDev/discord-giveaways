@@ -354,7 +354,8 @@ class Giveaway extends EventEmitter {
             pauseOptions: this.options.pauseOptions,
             isDrop: this.options.isDrop || undefined,
             allowedMentions: this.allowedMentions,
-            role: this.role
+            role: this.role,
+            entries: []
         };
     }
 

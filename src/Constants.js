@@ -1,3 +1,4 @@
+// eslint-disable-next-line node/no-unpublished-require
 const Discord = require('discord.js');
 
 exports.DEFAULT_CHECK_INTERVAL = 15_000;
@@ -77,11 +78,8 @@ exports.GiveawayMessages = {
  * @property {Discord.EmojiIdentifierResolvable} [reaction] The reaction to participate in the giveaway.
  * @property {GiveawayMessages} [messages] The giveaway messages.
  * @property {string} [thumbnail] The URL appearing as the thumbnail on the giveaway embed.
-<<<<<<< HEAD
  * @property {string} [banner] The URL appearing as the banner on the giveaway embed.
-=======
  * @property {string} [image] The URL appearing as the image on the giveaway embed.
->>>>>>> 4449fbaf40568cd7b16f377513270139ee7280bd
  * @property {any} [extraData] The extra data for this giveaway.
  * @property {LastChanceOptions} [lastChance] The options for the last chance system.
  * @property {PauseOptions} [pauseOptions] The options for the pause system.
@@ -228,11 +226,8 @@ exports.GiveawayEditOptions = {};
  * @property {GiveawayMessages} messages The giveaway messages.
  * @property {string} prize The giveaway prize.
  * @property {string} [thumbnail] The URL appearing as the thumbnail on the giveaway embed.
-<<<<<<< HEAD
  * @property {string} [banner] The URL appearing as the thumbnail on the giveaway embed.
-=======
  * @property {string} [image] The URL appearing as the image on the giveaway embed.
->>>>>>> 4449fbaf40568cd7b16f377513270139ee7280bd
  * @property {Discord.Snowflake} channelId The Id of the channel.
  * @property {Discord.Snowflake} guildId The Id of the guild.
  * @property {Discord.Snowflake[]} [winnerIds] The winner Ids of the giveaway after it ended.
@@ -251,5 +246,6 @@ exports.GiveawayEditOptions = {};
  * @property {boolean} [isDrop] If the giveaway is a drop, or not.<br>Drop means that if the amount of valid entrants to the giveaway is the same as "winnerCount" then it immediately ends.
  * @property {Discord.MessageMentionOptions} [allowedMentions] Which mentions should be parsed from the giveaway messages content.
  * @property {Discord.Role} [role] The role if the member only has it can join giveaway.
+ * @property {string[]} entries Array of all users that joined the giveaway.
  */
 exports.GiveawayData = {};

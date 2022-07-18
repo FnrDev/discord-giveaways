@@ -244,7 +244,7 @@ class GiveawaysManager extends EventEmitter {
                         : GiveawayMessages,
                 thumbnail: typeof options.thumbnail === 'string' ? options.thumbnail : undefined,
                 banner: typeof options.banner === 'string' ? options.banner : undefined,
-                reaction: Discord.Util.resolvePartialEmoji(options.reaction) ? options.reaction : undefined,
+                reaction: Discord.resolvePartialEmoji(options.reaction) ? options.reaction : undefined,
                 botsCanWin: typeof options.botsCanWin === 'boolean' ? options.botsCanWin : undefined,
                 exemptPermissions: Array.isArray(options.exemptPermissions) ? options.exemptPermissions : undefined,
                 exemptMembers: typeof options.exemptMembers === 'function' ? options.exemptMembers : undefined,

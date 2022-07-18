@@ -408,8 +408,8 @@ class Giveaway extends EventEmitter {
         if (typeof embed.footer?.text === 'string') embed.setFooter({ text: this.fillInString(embed.footer.text) });
         embed.spliceFields(
             0,
-            embed.data.fields.length,
-            embed.data.fields.map((f) => {
+            embed.data.fields?.length,
+            embed.data.fields?.map((f) => {
                 f.name = this.fillInString(f.name);
                 f.value = this.fillInString(f.value);
                 return f;

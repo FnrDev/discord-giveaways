@@ -209,7 +209,7 @@ class GiveawaysManager extends EventEmitter {
     start(channel, options) {
         return new Promise(async (resolve, reject) => {
             if (!this.ready) return reject('The manager is not ready yet.');
-            if (!channel?.id || !channel.isText()) {
+            if (!channel?.id || !channel.isTextBased()) {
                 return reject(`channel is not a valid text based channel. (val=${channel})`);
             }
             if (channel.isThread() && !channel.sendable) {

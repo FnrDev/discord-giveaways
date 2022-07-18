@@ -67,7 +67,7 @@ class GiveawaysManager extends EventEmitter {
      * @returns {Discord.MessageEmbed} The generated embed
      */
     generateMainEmbed(giveaway, lastChanceEnabled = false) {
-        const embed = new Discord.MessageEmbed()
+        const embed = new Discord.EmbedBuilder()
             .setTitle(giveaway.prize)
             .setColor(
                 giveaway.isDrop
@@ -116,7 +116,7 @@ class GiveawaysManager extends EventEmitter {
      * Generate an embed displayed when a giveaway is ended (with the winners list)
      * @param {Giveaway} giveaway The giveaway the embed needs to be generated for
      * @param {Discord.GuildMember[]} winners The giveaway winners
-     * @returns {Discord.MessageEmbed} The generated embed
+     * @returns {Discord.EmbedBuilder} The generated embed
      */
     generateEndEmbed(giveaway, winners) {
         let formattedWinners = winners.map((w) => `${w}`).join(', ');
@@ -140,7 +140,7 @@ class GiveawaysManager extends EventEmitter {
             formattedWinners = formattedWinners.slice(0, formattedWinners.lastIndexOf(', <@')) + `, ${i} more`;
         }
 
-        return new Discord.MessageEmbed()
+        return new Discord.EmbedBuilder()
             .setTitle(strings.prize)
             .setColor(giveaway.embedColorEnd)
             .setFooter({ text: strings.endedAt, iconURL: giveaway.messages.embedFooter.iconURL })
@@ -152,10 +152,10 @@ class GiveawaysManager extends EventEmitter {
     /**
      * Generate an embed displayed when a giveaway is ended and when there is no valid participant
      * @param {Giveaway} giveaway The giveaway the embed needs to be generated for
-     * @returns {Discord.MessageEmbed} The generated embed
+     * @returns {Discord.EmbedBuilder} The generated embed
      */
     generateNoValidParticipantsEndEmbed(giveaway) {
-        const embed = new Discord.MessageEmbed()
+        const embed = new Discord.EmbedBuilder()
             .setTitle(giveaway.prize)
             .setColor(giveaway.embedColorEnd)
             .setFooter({ text: giveaway.messages.endedAt, iconURL: giveaway.messages.embedFooter.iconURL })
@@ -525,7 +525,7 @@ class GiveawaysManager extends EventEmitter {
             // Second case: the giveaway is a drop and has already one reaction
             if (giveaway.isDrop) {
                 giveaway.message = await giveaway.fetchMessage().catch(() => {});
-                const emoji = Discord.Util.resolvePartialEmoji(giveaway.reaction);
+                const emoji = Discord.resolvePartialEmoji(giveaway.reaction);
                 const reaction = giveaway.message?.reactions.cache.find((r) =>
                     [r.emoji.name, r.emoji.id].filter(Boolean).includes(emoji?.id ?? emoji?.name)
                 );

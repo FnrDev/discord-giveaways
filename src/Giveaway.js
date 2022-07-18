@@ -188,7 +188,7 @@ class Giveaway extends EventEmitter {
      */
     get reaction() {
         if (!this.options.reaction && this.message) {
-            const emoji = Discord.Util.resolvePartialEmoji(this.manager.options.default.reaction);
+            const emoji = Discord.resolvePartialEmoji(this.manager.options.default.reaction);
             if (!this.message.reactions.cache.has(emoji.id ?? emoji.name)) {
                 const reaction = this.message.reactions.cache.reduce(
                     (prev, curr) => (curr.count > prev.count ? curr : prev),
@@ -286,7 +286,7 @@ class Giveaway extends EventEmitter {
      */
 
     get messageReaction() {
-        const emoji = Discord.Util.resolvePartialEmoji(this.reaction);
+        const emoji = Discord.resolvePartialEmoji(this.reaction);
         return (
             this.message?.reactions.cache.find((r) =>
                 [r.emoji.name, r.emoji.id].filter(Boolean).includes(emoji?.name ?? emoji?.id)
@@ -396,12 +396,12 @@ class Giveaway extends EventEmitter {
 
     /**
      * Filles in a embed with giveaway properties.
-     * @param {Discord.MessageEmbed|Discord.MessageEmbedOptions} embed The embed that should get filled in.
+     * @param {Discord.EmbedBuilder|Discord.MessageEmbedOptions} embed The embed that should get filled in.
      * @returns {?Discord.MessageEmbed} The filled in embed.
      */
     fillInEmbed(embed) {
         if (!embed || typeof embed !== 'object') return null;
-        embed = new Discord.MessageEmbed(embed);
+        embed = new Discord.EmbedBuilder(embed);
         embed.title = this.fillInString(embed.title);
         embed.description = this.fillInString(embed.description);
         if (typeof embed.author?.name === 'string') embed.author.name = this.fillInString(embed.author.name);
@@ -425,7 +425,7 @@ class Giveaway extends EventEmitter {
     fillInComponents(components) {
         if (!Array.isArray(components)) return null;
         return components.map((row) => {
-            row = new Discord.MessageActionRow(row instanceof Discord.MessageActionRow ? row.toJSON() : row);
+            row = new Discord.ActionRowBuilder(row instanceof Discord.MessageActionRow ? row.toJSON() : row);
             row.components = row.components.map((component) => {
                 component.customId &&= this.fillInString(component.customId);
                 component.label &&= this.fillInString(component.label);
@@ -558,7 +558,7 @@ class Giveaway extends EventEmitter {
         let guild = this.message.guild;
 
         // Fetch all guild members if the intent is available
-        if (new Discord.Intents(this.client.options.intents).has(Discord.Intents.FLAGS.GUILD_MEMBERS)) {
+        if (new Discord.IntentsBitField(this.client.options.intents).has(Discord.IntentsBitField.Flags.GuildMembers)) {
             // Try to fetch the guild from the client if the guild instance of the message does not have its shard defined
             if (this.client.shard && !guild.shard) {
                 guild = (await this.client.guilds.fetch(guild.id).catch(() => {})) ?? guild;
@@ -739,10 +739,10 @@ class Giveaway extends EventEmitter {
                 let formattedWinners = winners.map((w) => `<@${w.id}>`).join(', ');
                 const winMessage = this.fillInString(this.messages.winMessage.content || this.messages.winMessage);
                 const message = winMessage?.replace('{winners}', formattedWinners);
-                const row = new Discord.MessageActionRow()
+                const row = new Discord.ActionRowBuilder()
                     .addComponents(
                         new Discord.MessageButton()
-                            .setStyle('LINK')
+                            .setStyle(Discord.ButtonStyle.Link)
                             .setLabel('Go To Giveaway')
                             .setURL(this.messageURL)
                             .setEmoji('🥳')
@@ -760,6 +760,7 @@ class Giveaway extends EventEmitter {
                                     failIfNotExists: false
                                 },
                                 components: [row]
+                                
                             })
                             .catch(() => {});
                     }
@@ -1040,7 +1041,7 @@ class Giveaway extends EventEmitter {
                             })
                             .catch(() => {});
                     } else {
-                        const firstEmbed = new Discord.MessageEmbed(embed).setDescription(
+                        const firstEmbed = new Discord.EmbedBuilder(embed).setDescription(
                             embed.description.slice(0, embed.description.indexOf('{winners}'))
                         );
                         if (firstEmbed.length) {
@@ -1057,7 +1058,7 @@ class Giveaway extends EventEmitter {
                                 .catch(() => {});
                         }
 
-                        const tempEmbed = new Discord.MessageEmbed().setColor(embed.color);
+                        const tempEmbed = new Discord.EmbedBuilder().setColor(embed.color);
                         while (formattedWinners.length >= 4096) {
                             await channel
                                 .send({

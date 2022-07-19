@@ -406,15 +406,15 @@ class Giveaway extends EventEmitter {
         embed.description = this.fillInString(embed.description);
         if (typeof embed.author?.name === 'string') embed.author.name = this.fillInString(embed.author.name);
         if (typeof embed.footer?.text === 'string') embed.footer.text = this.fillInString(embed.footer.text);
-        embed.spliceFields(
-            0,
-            embed.data.fields.length,
-            embed.fields.map((f) => {
-                f.name = this.fillInString(f.name);
-                f.value = this.fillInString(f.value);
-                return f;
-            })
-        );
+        // embed.spliceFields(
+        //     0,
+        //     embed.data.fields.length,
+        //     embed.fields.map((f) => {
+        //         f.name = this.fillInString(f.name);
+        //         f.value = this.fillInString(f.value);
+        //         return f;
+        //     })
+        // );
         return embed;
     }
 

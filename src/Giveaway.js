@@ -396,12 +396,12 @@ class Giveaway extends EventEmitter {
 
     /**
      * Filles in a embed with giveaway properties.
-     * @param {Discord.Embed} embed The embed that should get filled in.
+     * @param {Discord.EmbedBuilder} embed The embed that should get filled in.
      * @returns {?Discord.EmbedBuilder} The filled in embed.
      */
     fillInEmbed(embed) {
-        if (!embed || typeof embed !== 'object') return null;
-        embed = new Discord.EmbedBuilder();
+        // if (!embed || typeof embed !== 'object') return null;
+        embed = new Discord.EmbedBuilder(embed);
         embed.title = this.fillInString(embed.title);
         embed.description = this.fillInString(embed.description);
         if (typeof embed.author?.name === 'string') embed.author.name = this.fillInString(embed.author.name);

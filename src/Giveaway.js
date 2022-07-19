@@ -406,7 +406,7 @@ class Giveaway extends EventEmitter {
         embed.setDescription(this.fillInString(embed.description));
         if (typeof embed.author?.name === 'string') embed.setAuthor({ name: this.fillInString(embed.author.name) });
         if (typeof embed.footer?.text === 'string') embed.setFooter({ text: this.fillInString(embed.footer.text) });
-        embed.spliceFields(
+        embed.data.spliceFields(
             0,
             embed.data.fields?.length,
             embed.data.fields?.map((f) => {

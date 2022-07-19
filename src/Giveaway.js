@@ -401,14 +401,14 @@ class Giveaway extends EventEmitter {
      */
     fillInEmbed(embed) {
         if (!embed || typeof embed !== 'object') return null;
-        embed = new Discord.Embed(embed);
+        embed = new Discord.EmbedBuilder();
         embed.title = this.fillInString(embed.title);
         embed.description = this.fillInString(embed.description);
         if (typeof embed.author?.name === 'string') embed.author.name = this.fillInString(embed.author.name);
         if (typeof embed.footer?.text === 'string') embed.footer.text = this.fillInString(embed.footer.text);
         embed.spliceFields(
             0,
-            embed.data.fields.length,
+            embed.fields.length,
             embed.fields.map((f) => {
                 f.name = this.fillInString(f.name);
                 f.value = this.fillInString(f.value);

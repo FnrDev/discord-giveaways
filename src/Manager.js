@@ -64,7 +64,7 @@ class GiveawaysManager extends EventEmitter {
      * Generate an embed displayed when a giveaway is running (with the remaining time)
      * @param {Giveaway} giveaway The giveaway the embed needs to be generated for
      * @param {boolean} [lastChanceEnabled=false] Whether or not to include the last chance text
-     * @returns {Discord.MessageEmbed} The generated embed
+     * @returns {Discord.EmbedBuilder} The generated embed
      */
     generateMainEmbed(giveaway, lastChanceEnabled = false) {
         const embed = new Discord.EmbedBuilder()
@@ -167,7 +167,7 @@ class GiveawaysManager extends EventEmitter {
     /**
      * Ends a giveaway. This method is automatically called when a giveaway ends.
      * @param {Discord.Snowflake} messageId The message id of the giveaway
-     * @param {string|MessageObject} [noWinnerMessage=null] Sent in the channel if there is no valid winner for the giveaway.
+     * @param {?string|MessageObject} [noWinnerMessage=null] Sent in the channel if there is no valid winner for the giveaway.
      * @returns {Promise<Discord.GuildMember[]>} The winners
      *
      * @example
@@ -190,7 +190,7 @@ class GiveawaysManager extends EventEmitter {
 
     /**
      * Starts a new giveaway
-     * @param {Discord.TextChannel|Discord.NewsChannel|Discord.ThreadChannel} channel The channel in which the giveaway will be created
+     * @param {Discord.GuildTextBasedChannel} channel The channel in which the giveaway will be created
      * @param {GiveawayStartOptions} options The options for the giveaway
      * @returns {Promise<Giveaway>} The created giveaway.
      *
@@ -589,7 +589,7 @@ class GiveawaysManager extends EventEmitter {
                 giveaway.lastChance.enabled && giveaway.remainingTime < giveaway.lastChance.threshold;
             const updatedEmbed = this.generateMainEmbed(giveaway, lastChanceEnabled);
             const needUpdate =
-                !updatedEmbed.equals(giveaway.message.embeds[0]) ||
+                !updatedEmbed.equals(giveaway.message.embeds[0]?.equals(updatedEmbed.toJSON())) ||
                 giveaway.message.content !== giveaway.fillInString(giveaway.messages.giveaway);
 
             if (needUpdate || this.options.forceUpdateEvery) {
@@ -624,7 +624,7 @@ class GiveawaysManager extends EventEmitter {
         if (!channel) return;
         const message = await channel.messages.fetch(packet.d.message_id).catch(() => {});
         if (!message) return;
-        const emoji = Discord.Util.resolvePartialEmoji(giveaway.reaction);
+        const emoji = Discord.resolvePartialEmoji(giveaway.reaction);
         const reaction = message.reactions.cache.find((r) =>
             [r.emoji.name, r.emoji.id].filter(Boolean).includes(emoji?.id ?? emoji?.name)
         );

@@ -1,7 +1,6 @@
 const { EventEmitter } = require('node:events');
 const { setTimeout, clearTimeout } = require('node:timers');
 const { deepmerge, deepmergeCustom } = require('deepmerge-ts');
-const customDeepmerge = deepmergeCustom({ mergeArrays: false });
 const serialize = require('serialize-javascript');
 // eslint-disable-next-line node/no-unpublished-require
 const Discord = require('discord.js');
@@ -19,6 +18,9 @@ const {
 } = require('./Constants.js');
 const GiveawaysManager = require('./Manager.js');
 const { validateEmbedColor } = require('./utils.js');
+const { EmbedBuilder } = require('@discordjs/builders');
+
+const customDeepmerge = deepmergeCustom({ mergeArrays: false });
 
 /**
  * Represents a Giveaway.
@@ -396,26 +398,32 @@ class Giveaway extends EventEmitter {
 
     /**
      * Filles in a embed with giveaway properties.
-     * @param {Discord.EmbedBuilder} embed The embed that should get filled in.
-     * @returns {?Discord.EmbedBuilder} The filled in embed.
+     * @param {?Discord.JSONEncodable<Discord.APIEmbed> | Discord.APIEmbed} embed The embed that should get filled in.
+     * @returns {?EmbedBuilder} The filled in embed.
      */
     fillInEmbed(embed) {
-        // if (!embed || typeof embed !== 'object') return null;
-        embed = new Discord.EmbedBuilder(embed);
-        embed.title = this.fillInString(embed.title);
-        embed.description = this.fillInString(embed.description);
-        if (typeof embed.author?.name === 'string') embed.author.name = this.fillInString(embed.author.name);
-        if (typeof embed.footer?.text === 'string') embed.footer.text = this.fillInString(embed.footer.text);
-        // embed.spliceFields(
-        //     0,
-        //     embed.data.fields.length,
-        //     embed.fields.map((f) => {
-        //         f.name = this.fillInString(f.name);
-        //         f.value = this.fillInString(f.value);
-        //         return f;
-        //     })
-        // );
-        return embed;
+       if (!embed || typeof embed !== 'object') return null;
+       embed = Discord.EmbedBuilder.from(embed);
+       embed.setTitle(this.fillInString(embed.data.title));
+       embed.setDescription(this.fillInString(embed.data.description));
+       if (typeof embed.data.author?.name === 'string') {
+            embed.data.author.name === this.fillInString(embed.data.author.name)
+       }
+       if (typeof embed.data.footer?.text === 'string') {
+            embed.data.footer.text = this.fillInString(embed.data.footer.text);
+       }
+       if (embed.data.fields?.length) {
+            embed.spliceFields(
+                0,
+                embed.data.fields.length,
+                ...embed.data.fields.map((f) => {
+                    f.name = this.fillInString(f.name);
+                    f.value = this.fillInString(f.value);
+                    return f;
+                })
+            )
+       }
+       return embed;
     }
 
     /**
@@ -471,7 +479,7 @@ class Giveaway extends EventEmitter {
 
     /**
      * Fetches all users of the giveaway reaction, except bots, if not otherwise specified.
-     * @returns {Promise<Discord.Collection<Discord.Snowflake, Discord.User>>} The collection of reaction users.
+     * @returns {Promise<Discord.Collection<Snowflake, Discord.User>} The collection of reaction users.
      */
     async fetchAllEntrants() {
         return new Promise(async (resolve, reject) => {
@@ -678,7 +686,7 @@ class Giveaway extends EventEmitter {
 
     /**
      * Ends the giveaway.
-     * @param {string|MessageObject} [noWinnerMessage=null] Sent in the channel if there is no valid winner for the giveaway.
+     * @param {?string|MessageObject} [noWinnerMessage=null] Sent in the channel if there is no valid winner for the giveaway.
      * @returns {Promise<Discord.GuildMember[]>} The winner(s).
      */
     end(noWinnerMessage = null) {
@@ -794,7 +802,7 @@ class Giveaway extends EventEmitter {
                 if (this.messages.winMessage.embed && typeof this.messages.winMessage.embed === 'object') {
                     if (message?.length > 2000) formattedWinners = winners.map((w) => `<@${w.id}>`).join(', ');
                     const embed = this.fillInEmbed(this.messages.winMessage.embed);
-                    const embedDescription = embed.description?.replace('{winners}', formattedWinners) ?? '';
+                    const embedDescription = embed.data.description?.replace('{winners}', formattedWinners) ?? '';
 
                     if (embedDescription.length <= 4096) {
                         await channel
@@ -810,10 +818,10 @@ class Giveaway extends EventEmitter {
                             })
                             .catch(() => {});
                     } else {
-                        const firstEmbed = new Discord.MessageEmbed(embed).setDescription(
-                            embed.description.slice(0, embed.description.indexOf('{winners}'))
+                        const firstEmbed = new Discord.EmbedBuilder(embed).setDescription(
+                            embed.data.description.slice(0, embed.data.description.indexOf('{winners}'))
                         );
-                        if (firstEmbed.length) {
+                        if (Discord.embedLength(firstEmbed.data)) {
                             await channel
                                 .send({
                                     content: message?.length <= 2000 ? message : null,
@@ -827,7 +835,7 @@ class Giveaway extends EventEmitter {
                                 .catch(() => {});
                         }
 
-                        const tempEmbed = new Discord.MessageEmbed().setColor(embed.color);
+                        const tempEmbed = new Discord.EmbedBuilder().setColor(embed.data.color);
                         while (formattedWinners.length >= 4096) {
                             await channel
                                 .send({
@@ -853,7 +861,7 @@ class Giveaway extends EventEmitter {
                         const lastEmbed = tempEmbed.setDescription(
                             embed.description.slice(embed.description.indexOf('{winners}') + 9)
                         );
-                        if (lastEmbed.length) {
+                        if (Discord.embedLength(lastEmbed.data)) {
                             await channel
                                 .send({ embeds: [lastEmbed], components: [row], allowedMentions: this.allowedMentions })
                                 .catch(() => {});
@@ -1025,7 +1033,7 @@ class Giveaway extends EventEmitter {
                 if (options.messages.congrat.embed && typeof options.messages.congrat.embed === 'object') {
                     if (message?.length > 2000) formattedWinners = winners.map((w) => `<@${w.id}>`).join(', ');
                     const embed = this.fillInEmbed(options.messages.congrat.embed);
-                    const embedDescription = embed.description?.replace('{winners}', formattedWinners) ?? '';
+                    const embedDescription = embed.data.description?.replace('{winners}', formattedWinners) ?? '';
 
                     if (embedDescription.length <= 4096) {
                         await channel
@@ -1058,7 +1066,7 @@ class Giveaway extends EventEmitter {
                                 .catch(() => {});
                         }
 
-                        const tempEmbed = new Discord.EmbedBuilder().setColor(embed.color);
+                        const tempEmbed = new Discord.EmbedBuilder().setColor(embed.data.color);
                         while (formattedWinners.length >= 4096) {
                             await channel
                                 .send({
@@ -1082,9 +1090,9 @@ class Giveaway extends EventEmitter {
                             .catch(() => {});
 
                         const lastEmbed = tempEmbed.setDescription(
-                            embed.description.slice(embed.description.indexOf('{winners}') + 9)
+                            embed.data.description.slice(embed.description.indexOf('{winners}') + 9)
                         );
-                        if (lastEmbed.length) {
+                        if (Discord.embedLength(lastEmbed.toJSON())) {
                             await channel
                                 .send({ embeds: [lastEmbed], components, allowedMentions: this.allowedMentions })
                                 .catch(() => {});

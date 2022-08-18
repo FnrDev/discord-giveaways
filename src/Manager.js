@@ -18,7 +18,7 @@ const {
     DEFAULT_CHECK_INTERVAL
 } = require('./Constants.js');
 const Giveaway = require('./Giveaway.js');
-const { validateEmbedColor } = require('./utils.js');
+const { validateEmbedColor, embedEqual } = require('./utils.js');
 
 /**
  * Giveaways Manager

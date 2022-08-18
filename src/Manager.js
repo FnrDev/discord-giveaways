@@ -521,14 +521,28 @@ class GiveawaysManager extends EventEmitter {
                 return;
             }
 
-            // Second case: the giveaway is a drop and has already one reaction
+            // Second case: the giveaway is a drop
             if (giveaway.isDrop) {
                 giveaway.message = await giveaway.fetchMessage().catch(() => {});
-                const emoji = Discord.resolvePartialEmoji(giveaway.reaction);
-                const reaction = giveaway.message?.reactions.cache.find((r) =>
-                    [r.emoji.name, r.emoji.id].filter(Boolean).includes(emoji?.id ?? emoji?.name)
-                );
-                if (reaction?.count - 1 >= giveaway.winnerCount) return this.end(giveaway.messageId).catch(() => {});
+
+                if (giveaway.messageReaction?.count - 1 >= giveaway.winnerCount) {
+                    const users = await giveaway.fetchAllEntrants().catch(() => {});
+
+                    let validUsers = 0;
+                    for (const user of [...(users?.values() || [])]) {
+                        if (await giveaway.checkWinnerEntry(user)) validUsers++;
+                        if (validUsers === giveaway.winnerCount) {
+                            await this.end(giveaway.messageId).catch(() => {});
+                            break;
+                        }
+                    }
+                }
+
+                // Delete the data of a drop which did not end within 1 week
+                if (giveaway.startAt + DELETE_DROP_DATA_AFTER <= Date.now()) {
+                    this.giveaways = this.giveaways.filter((g) => g.messageId !== giveaway.messageId);
+                    return await this.deleteGiveaway(giveaway.messageId);
+                }
             }
 
             // Third case: the giveaway is paused and we should check whether it should be unpaused
@@ -543,7 +557,7 @@ class GiveawaysManager extends EventEmitter {
                 }
                 if (
                     Number.isFinite(giveaway.pauseOptions.unPauseAfter) &&
-                    Date.now() < giveaway.pauseOptions.unPauseAfter
+                    Date.now() > giveaway.pauseOptions.unPauseAfter
                 ) {
                     return this.unpause(giveaway.messageId).catch(() => {});
                 }
@@ -567,7 +581,7 @@ class GiveawaysManager extends EventEmitter {
                 setTimeout(async () => {
                     giveaway.message ??= await giveaway.fetchMessage().catch(() => {});
                     const embed = this.generateMainEmbed(giveaway, true);
-                    giveaway.message = await giveaway.message
+                    await giveaway.message
                         ?.edit({
                             content: giveaway.fillInString(giveaway.messages.giveaway),
                             embeds: [embed],
@@ -580,20 +594,18 @@ class GiveawaysManager extends EventEmitter {
             // Fetch the message if necessary and make sure the embed is alright
             giveaway.message ??= await giveaway.fetchMessage().catch(() => {});
             if (!giveaway.message) return;
-            if (!giveaway.message.embeds[0]) {
-                giveaway.message = await giveaway.message.suppressEmbeds(false).catch(() => {});
-            }
+            if (!giveaway.message.embeds[0]) await giveaway.message.suppressEmbeds(false).catch(() => {});
 
             // Regular case: the giveaway is not ended and we need to update it
             const lastChanceEnabled =
                 giveaway.lastChance.enabled && giveaway.remainingTime < giveaway.lastChance.threshold;
             const updatedEmbed = this.generateMainEmbed(giveaway, lastChanceEnabled);
             const needUpdate =
-                !updatedEmbed.equals(giveaway.message.embeds[0]?.equals(updatedEmbed.toJSON())) ||
+                !embedEqual(giveaway.message.embeds[0].data, updatedEmbed.data) ||
                 giveaway.message.content !== giveaway.fillInString(giveaway.messages.giveaway);
 
             if (needUpdate || this.options.forceUpdateEvery) {
-                giveaway.message = await giveaway.message
+                await giveaway.message
                     .edit({
                         content: giveaway.fillInString(giveaway.messages.giveaway),
                         embeds: [updatedEmbed],
